@@ -60,6 +60,14 @@ CREATE TABLE IF NOT EXISTS payments (
   created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS user_logins (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  clerk_id   VARCHAR(255) NOT NULL,
+  email      VARCHAR(255) NOT NULL,
+  name       VARCHAR(255),
+  login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS audit_log (
   id             INT AUTO_INCREMENT PRIMARY KEY,
   admin_clerk_id VARCHAR(255),

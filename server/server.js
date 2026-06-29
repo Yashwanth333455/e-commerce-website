@@ -31,6 +31,25 @@ app.use(express.json());
 // ── Admin email whitelist ────────────────────────────────────────────────────
 const ADMIN_EMAILS = ['vikaselle196@gmail.com', 'yashwantreddy231@gmail.com'];
 
+// Initialize user_logins database migration
+async function initDB() {
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS user_logins (
+        id         INT AUTO_INCREMENT PRIMARY KEY,
+        clerk_id   VARCHAR(255) NOT NULL,
+        email      VARCHAR(255) NOT NULL,
+        name       VARCHAR(255),
+        login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ MySQL user_logins table verified');
+  } catch (err) {
+    console.error('❌ Database migration error:', err);
+  }
+}
+initDB();
+
 // ── Clerk client ─────────────────────────────────────────────────────────────
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
@@ -193,6 +212,13 @@ app.post('/api/users/sync-login', async (req, res) => {
       );
       console.log(`🌱 Real-time user created & login synced: ${email} (clerkId: ${clerkId}, role: ${role})`);
     }
+
+    // Insert historical login record for "each and every time of login" tracking
+    await db.execute(
+      'INSERT INTO user_logins (clerk_id, email, name) VALUES (?,?,?)',
+      [clerkId, email, name || null]
+    );
+    console.log(`📝 Logged login event: ${email} at ${new Date().toISOString()}`);
     
     res.json({ success: true });
   } catch (err) {
@@ -343,11 +369,10 @@ app.get('/api/admin/stats', requireAdmin, async (req, res) => {
        GROUP BY DATE(created_at) ORDER BY date ASC`
     );
     const [recentLogins] = await db.execute(
-      `SELECT name, email, last_login
-       FROM users
-       WHERE last_login IS NOT NULL
-       ORDER BY last_login DESC
-       LIMIT 10`
+      `SELECT name, email, login_time AS last_login
+       FROM user_logins
+       ORDER BY login_time DESC
+       LIMIT 15`
     );
 
     res.json({ userCount, orderCount, revenue, productCount, dailyRevenue, recentLogins });

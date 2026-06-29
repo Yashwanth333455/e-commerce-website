@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "motion/react";
 
@@ -38,20 +38,33 @@ const products = [
 const ProductCard = ({ product, index }) => {
   const ref = useRef(null);
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], product.speed);
+  const y = useTransform(
+    scrollYProgress, 
+    [0, 1], 
+    isMobile ? [0, 0] : product.speed
+  );
   const rotate = useTransform(
     scrollYProgress,
     [0, 1],
-    [index % 2 === 0 ? -5 : 5, index % 2 === 0 ? 5 : -5]
+    isMobile ? [0, 0] : [index % 2 === 0 ? -5 : 5, index % 2 === 0 ? 5 : -5]
   );
 
   const topOffset =
-    index === 1 ? "mt-[18%]" : index === 2 ? "mt-[36%]" : "";
+    !isMobile && index === 1 ? "mt-[18%]" : !isMobile && index === 2 ? "mt-[36%]" : "";
 
   const handleClick = () => {
     if (product.comingSoon) return;
@@ -195,8 +208,8 @@ const EditorialSelections = () => {
           </motion.div>
         </div>
 
-        {/* Product cards — 3 columns */}
-        <div className="grid grid-cols-3 gap-4 sm:gap-8 md:gap-16 lg:gap-24 relative">
+        {/* Product cards — responsive: 1 column on mobile, 3 columns on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 lg:gap-24 relative">
           {products.map((product, i) => (
             <ProductCard key={product.id} product={product} index={i} />
           ))}

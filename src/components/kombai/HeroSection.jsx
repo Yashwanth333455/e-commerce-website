@@ -28,6 +28,14 @@ const bgImages = Array.from(
 const HeroSection = () => {
   const navigate = useNavigate();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Shuffle card states
   const [card1Img, setCard1Img] = useState("/pexels-susheelparihar-33180676.jpg");
@@ -37,6 +45,7 @@ const HeroSection = () => {
   const [poolIndex, setPoolIndex] = useState(2); // Start drawing next images from index 2
 
   const handleMouseMove = (e) => {
+    if (isMobile) return; // Disable parallax mouse tracking on mobile
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
     const x = (clientX / innerWidth - 0.5) * 40;
@@ -104,16 +113,16 @@ const HeroSection = () => {
   // Stacked card animation variants
   const card1Variants = {
     front: {
-      left: "-40px",
-      bottom: "-32px",
+      left: isMobile ? "-20px" : "-40px",
+      bottom: isMobile ? "-16px" : "-32px",
       width: "60%",
       height: "80%",
-      x: mousePos.x * 0.25,
-      y: mousePos.y * 0.25,
+      x: isMobile ? 0 : mousePos.x * 0.25,
+      y: isMobile ? 0 : mousePos.y * 0.25,
       scale: 1,
       rotate: -5,
       zIndex: 20,
-      borderWidth: "6px",
+      borderWidth: isMobile ? "3px" : "6px",
       borderColor: "#ffffff",
       opacity: 1,
       transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] }
@@ -123,8 +132,8 @@ const HeroSection = () => {
       bottom: "0px",
       width: "100%",
       height: "100%",
-      x: mousePos.x * -0.2,
-      y: mousePos.y * -0.2,
+      x: isMobile ? 0 : mousePos.x * -0.2,
+      y: isMobile ? 0 : mousePos.y * -0.2,
       scale: 1,
       rotate: 0,
       zIndex: 10,
@@ -134,8 +143,8 @@ const HeroSection = () => {
       transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] }
     },
     shuffle: {
-      x: -280,
-      y: 40,
+      x: isMobile ? -140 : -280,
+      y: isMobile ? 20 : 40,
       scale: 0.95,
       rotate: -15,
       zIndex: 25,
@@ -146,16 +155,16 @@ const HeroSection = () => {
 
   const card2Variants = {
     front: {
-      left: "-40px",
-      bottom: "-32px",
+      left: isMobile ? "-20px" : "-40px",
+      bottom: isMobile ? "-16px" : "-32px",
       width: "60%",
       height: "80%",
-      x: mousePos.x * 0.25,
-      y: mousePos.y * 0.25,
+      x: isMobile ? 0 : mousePos.x * 0.25,
+      y: isMobile ? 0 : mousePos.y * 0.25,
       scale: 1,
       rotate: -5,
       zIndex: 20,
-      borderWidth: "6px",
+      borderWidth: isMobile ? "3px" : "6px",
       borderColor: "#ffffff",
       opacity: 1,
       transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] }
@@ -165,8 +174,8 @@ const HeroSection = () => {
       bottom: "0px",
       width: "100%",
       height: "100%",
-      x: mousePos.x * -0.2,
-      y: mousePos.y * -0.2,
+      x: isMobile ? 0 : mousePos.x * -0.2,
+      y: isMobile ? 0 : mousePos.y * -0.2,
       scale: 1,
       rotate: 0,
       zIndex: 10,
@@ -176,8 +185,8 @@ const HeroSection = () => {
       transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] }
     },
     shuffle: {
-      x: -280,
-      y: 40,
+      x: isMobile ? -140 : -280,
+      y: isMobile ? 20 : 40,
       scale: 0.95,
       rotate: -15,
       zIndex: 25,

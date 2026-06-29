@@ -27,11 +27,11 @@ const AboutSection = () => {
           </motion.h2>
         </div>
 
-        {/* Two-column layout */}
-        <div className="flex flex-row gap-6 sm:gap-10 md:gap-16 lg:gap-24 items-center">
+        {/* Two-column layout — stacks on mobile */}
+        <div className="flex flex-col md:flex-row gap-10 md:gap-16 lg:gap-24 items-center">
 
           {/* Image column */}
-          <div className="w-1/2 flex-shrink-0">
+          <div className="w-full md:w-1/2 flex-shrink-0">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -67,7 +67,7 @@ const AboutSection = () => {
           </div>
 
           {/* Text column */}
-          <div className="w-1/2 flex flex-col justify-center">
+          <div className="w-full md:w-1/2 flex flex-col justify-center">
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 0.8 }}

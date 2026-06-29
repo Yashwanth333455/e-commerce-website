@@ -51,6 +51,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// ── HTTPS Enforcement Middleware (Production only) ───────────────────────────
+if (process.env.NODE_ENV === 'production') {
+  app.enable('trust proxy'); // Trust headers set by reverse proxies (Render, Heroku, AWS)
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
+}
+
 // Raw body for Clerk webhook signature verification
 app.use('/api/clerk-webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());

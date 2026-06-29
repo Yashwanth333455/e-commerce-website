@@ -24,6 +24,21 @@ app.use(cors({
   credentials: true,
 }));
 
+// ── Content-Security-Policy (CSP) Middleware ────────────────────────────────
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://*.clerk.accounts.dev; " +
+    "connect-src 'self' https://*.clerk.accounts.dev https://api.razorpay.com http://localhost:5000 ws://localhost:5173 ws://localhost:3000; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
+    "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; " +
+    "img-src 'self' data: https://*.unsplash.com https://img.clerk.com https://images.unsplash.com; " +
+    "frame-src 'self' https://checkout.razorpay.com;"
+  );
+  next();
+});
+
 // Raw body for Clerk webhook signature verification
 app.use('/api/clerk-webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());

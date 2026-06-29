@@ -66,7 +66,7 @@ if (process.env.NODE_ENV === 'production') {
   app.enable('trust proxy'); // Trust headers set by reverse proxies (Render, Heroku, AWS)
   app.use((req, res, next) => {
     if (req.headers['x-forwarded-proto'] !== 'https') {
-      return res.redirect(`https://${req.headers.host}${req.url}`);
+      return res.redirect(301, `https://${req.headers.host}${req.url}`);
     }
     next();
   });

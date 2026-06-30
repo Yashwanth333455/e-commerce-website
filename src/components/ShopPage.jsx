@@ -7,6 +7,7 @@ import ProductCard from "./ProductCard";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { products } from "../data/products";
+import { API_BASE_URL } from "../config";
 
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,17 +17,17 @@ export default function ShopPage() {
   useEffect(() => {
     async function loadProducts() {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch(`${API_BASE_URL}/api/products`);
         if (!res.ok) throw new Error();
         const data = await res.json();
         if (data.length === 0) {
           console.log("Database is empty. Seeding products from client...");
-          await fetch("http://localhost:5000/api/products/seed", {
+          await fetch(`${API_BASE_URL}/api/products/seed`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ products })
           });
-          const reloadRes = await fetch("http://localhost:5000/api/products");
+          const reloadRes = await fetch(`${API_BASE_URL}/api/products`);
           const reloadData = await reloadRes.json();
           setProductList(reloadData);
         } else {

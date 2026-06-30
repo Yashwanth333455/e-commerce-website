@@ -3,6 +3,7 @@
 // that call openSignIn / openSignUp / signOut / user still work unchanged.
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useUser, useClerk } from '@clerk/react';
+import { API_BASE_URL } from '../config';
 
 const AuthContext = createContext(null);
 
@@ -30,7 +31,7 @@ export function AuthProvider({ children }) {
     
     async function syncLoginToDB() {
       try {
-        await fetch('http://localhost:5000/api/users/sync-login', {
+        await fetch(`${API_BASE_URL}/api/users/sync-login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

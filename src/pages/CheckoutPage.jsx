@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 import { useUser } from '@clerk/react';
+import { API_BASE_URL } from '../config';
 
 const steps = ['Shipping', 'Payment', 'Review'];
 
@@ -50,7 +51,7 @@ export default function CheckoutPage() {
 
     if (paymentMethod === 'card' || paymentMethod === 'upi') {
       try {
-        const orderRes = await fetch('http://localhost:5000/api/create-order', {
+        const orderRes = await fetch(`${API_BASE_URL}/api/create-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount: Math.round(finalTotal * 100) })
@@ -58,10 +59,10 @@ export default function CheckoutPage() {
         
         const orderData = await orderRes.json();
         if (orderData.error) throw new Error(orderData.error);
-
+ 
         // If backend returned a mock order, skip real checkout modal
         if (orderData.mockMode) {
-          await fetch('http://localhost:5000/api/orders', {
+          await fetch(`${API_BASE_URL}/api/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -74,7 +75,7 @@ export default function CheckoutPage() {
           setOrderPlaced(true);
           return;
         }
-
+ 
         // Open Razorpay Checkout modal
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_T5jwPnNSv9l1bs',
@@ -86,7 +87,7 @@ export default function CheckoutPage() {
           handler: async function (response) {
             try {
               // 1. Verify payment signature on backend
-              const verifyRes = await fetch('http://localhost:5000/api/verify-payment', {
+              const verifyRes = await fetch(`${API_BASE_URL}/api/verify-payment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -99,9 +100,9 @@ export default function CheckoutPage() {
               if (!verifyData.success) {
                 throw new Error(verifyData.error || "Payment signature verification failed");
               }
-
+ 
               // 2. Save order to database
-              await fetch('http://localhost:5000/api/orders', {
+              await fetch(`${API_BASE_URL}/api/orders`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -110,7 +111,7 @@ export default function CheckoutPage() {
                   razorpayPaymentId: response.razorpay_payment_id
                 })
               });
-
+ 
               clearCart();
               setOrderPlaced(true);
             } catch (err) {
@@ -127,11 +128,11 @@ export default function CheckoutPage() {
             color: "#0D9488",
           }
         };
-
+ 
         const rzp = new window.Razorpay(options);
         rzp.open();
         return;
-
+ 
       } catch (err) {
         console.error("Payment Order Error:", err);
         alert("Failed to initiate payment: " + err.message);
@@ -139,7 +140,7 @@ export default function CheckoutPage() {
     } else {
       // Cash on delivery or other
       try {
-        await fetch('http://localhost:5000/api/orders', {
+        await fetch(`${API_BASE_URL}/api/orders`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(orderPayload)

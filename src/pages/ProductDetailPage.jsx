@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
+import { API_BASE_URL } from "../config";
 
 /* ─── Static reviews per product ─── */
 const REVIEWS = {
@@ -59,7 +60,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
     async function loadProduct() {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch(`${API_BASE_URL}/api/products`);
         if (!res.ok) throw new Error();
         const data = await res.json();
         const found = data.find(p => p.id === Number(id));

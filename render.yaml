@@ -1,0 +1,42 @@
+# Render Blueprint Specification File
+# This file automates the creation of all services on Render.
+services:
+  # 1. Express API Backend Service
+  - type: web
+    name: e-commerce-backend
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: DB_NAME
+        value: e_commerce_db
+      - key: CLERK_SECRET_KEY
+        sync: false # Render will prompt you to paste this key during setup
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+  # 2. Vite Storefront Static Site
+  - type: web
+    name: e-commerce-storefront
+    env: static
+    plan: free
+    rootDir: .
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    headers:
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://*.razorpay.com https://*.clerk.accounts.dev; connect-src 'self' https://*.clerk.accounts.dev https://api.razorpay.com https://*.razorpay.com http://localhost:* http://127.0.0.1:* http://10.*:* ws://localhost:* ws://127.0.0.1:* ws://10.*:*; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://*.unsplash.com https://img.clerk.com https://images.unsplash.com https://*.razorpay.com; frame-src 'self' https://checkout.razorpay.com https://*.razorpay.com;"
+    envVars:
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false

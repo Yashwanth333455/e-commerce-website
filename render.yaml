@@ -26,9 +26,8 @@ services:
         sync: false
 
   # 2. Vite Storefront Static Site
-  - type: web
+  - type: static
     name: e-commerce-storefront
-    env: static
     plan: free
     rootDir: .
     buildCommand: npm install && npm run build

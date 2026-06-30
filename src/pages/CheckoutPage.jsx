@@ -195,32 +195,114 @@ export default function CheckoutPage() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-gradient-to-br from-[#F5F0EB] via-white to-[#EDE5DC]/40 pt-32 pb-20 flex items-center justify-center">
-          <div className="text-center max-w-lg mx-auto px-6 py-12 rounded-3xl bg-white/70 backdrop-blur-md border border-white/40 shadow-xl">
-            <div className="flex justify-center mb-6">
-              <CheckCircle size={72} className="text-green-500 animate-bounce" strokeWidth={1.5} />
+        <div className="min-h-screen bg-gradient-to-br from-[#FAF7F2] via-white to-[#EDE5DC]/45 pt-32 pb-20 flex items-center justify-center relative overflow-hidden">
+          {/* Decorative floating blur circles for premium depth */}
+          <div className="absolute top-1/4 left-1/4 w-[350px] h-[350px] rounded-full bg-[#E5D5C5]/20 blur-[90px] pointer-events-none -z-10 animate-pulse" style={{ animationDuration: '6s' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-[#D4C3B3]/25 blur-[100px] pointer-events-none -z-10 animate-pulse" style={{ animationDuration: '8s' }} />
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 35, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 120 }}
+            className="text-center max-w-xl mx-auto px-8 py-14 rounded-[32px] bg-white/75 backdrop-blur-xl border border-white/50 shadow-2xl relative z-10"
+            style={{
+              boxShadow: '0 25px 60px -15px rgba(115, 95, 80, 0.12), 0 0 40px rgba(255, 255, 255, 0.5) inset'
+            }}
+          >
+            {/* Success Ring Animation */}
+            <div className="flex justify-center mb-8 relative">
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', damping: 15, delay: 0.15 }}
+                className="w-24 h-24 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 relative"
+              >
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ repeat: Infinity, repeatType: "reverse", duration: 2 }}
+                  className="absolute inset-0 rounded-full bg-emerald-500/5"
+                />
+                <motion.svg 
+                  className="w-12 h-12 text-emerald-500" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor" 
+                  strokeWidth="2"
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <motion.path 
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.65, ease: "easeOut", delay: 0.4 }}
+                    d="M5 13l4 4L19 7" 
+                  />
+                </motion.svg>
+              </motion.div>
             </div>
-            <h1 className="font-heqra text-3xl font-bold text-gray-900 mb-4">Order Confirmed!</h1>
-            <p className="font-outfit text-gray-500 font-light mb-2">Thank you for shopping with Sai Deepthi.</p>
-            <p className="font-outfit text-gray-500 font-light mb-8 text-sm">
-              Your order has been placed successfully. You'll receive a confirmation email shortly.
-            </p>
-            <div className="bg-white/80 rounded-2xl p-6 shadow-sm border border-gray-100 mb-8 text-left max-w-sm mx-auto">
-              <p className="text-xs uppercase tracking-widest text-gray-400 mb-1">Order Number</p>
-              <p className="font-heqra text-xl font-bold text-ink-black">
+
+            <motion.h1 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="font-heqra text-4xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent mb-4 tracking-tight"
+            >
+              Order Confirmed!
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className="font-outfit text-gray-500 font-light max-w-md mx-auto mb-2 text-[15px]"
+            >
+              Thank you for shopping with <span className="font-semibold text-gray-800">Sai Deepthi</span>.
+            </motion.p>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="font-outfit text-gray-400 font-light mb-10 text-sm max-w-sm mx-auto"
+            >
+              Your order has been placed successfully. You will receive a confirmation email shortly.
+            </motion.p>
+
+            {/* Premium details container */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.9, duration: 0.4 }}
+              whileHover={{ y: -3 }}
+              className="bg-gradient-to-b from-white/90 to-white/50 rounded-2xl p-6 shadow-sm border border-gray-100/60 mb-10 text-left max-w-sm mx-auto transition-shadow hover:shadow-md"
+            >
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Order Number</p>
+              <p className="font-heqra text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 #SD{Date.now().toString().slice(-8)}
               </p>
-              <div className="h-px bg-gray-100 my-4" />
-              <p className="text-xs uppercase tracking-widest text-gray-400 mb-1">Estimated Delivery</p>
-              <p className="font-outfit font-medium text-gray-800">5–7 Business Days</p>
-            </div>
-            <Link
-              to="/shop"
-              className="inline-flex items-center gap-2 rounded-xl bg-ink-black px-8 py-3.5 text-sm font-bold uppercase tracking-wider text-white hover:bg-rust transition-all duration-300 shadow-md"
+              
+              <div className="h-px bg-gray-100/80 my-4" />
+              
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Estimated Delivery</p>
+              <p className="font-outfit font-medium text-gray-800 flex items-center gap-2">
+                <Truck size={16} className="text-gray-400" />
+                5–7 Business Days
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
             >
-              Continue Shopping
-            </Link>
-          </div>
+              <Link
+                to="/shop"
+                className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-ink-black px-10 py-4 text-xs font-bold uppercase tracking-widest text-white hover:bg-rust transition-all duration-300 shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-rust/10"
+              >
+                Continue Shopping
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
         <Footer />
       </>
